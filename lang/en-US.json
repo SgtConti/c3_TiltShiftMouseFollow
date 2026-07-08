@@ -1,50 +1,23 @@
 {
-	"languageTag": "en-US",
-	"fileDescription": "Strings for Tilt Shift (Mouse Follow) v2.",
-	"text": {
-		"effects": {
-			"myfx_tiltshiftmousefollowv2": {
-				"name": "Tilt Shift (Mouse Follow) v2",
-				"description": "Stable v2. Band / ellipse / radial focus that follows the mouse (set params from events). New ID avoids breaking old projects.",
-				"parameters": {
-					"mouseX": {
-						"name": "Mouse X (layout px)",
-						"desc": "Set every tick from Mouse.X (layout coordinates)."
-					},
-					"mouseY": {
-						"name": "Mouse Y (layout px)",
-						"desc": "Set every tick from Mouse.Y (layout coordinates)."
-					},
-					"angleDeg": {
-						"name": "Focus angle (deg)",
-						"desc": "Band direction. 0=horizontal band (blur vs Y), 90=vertical band (blur vs X)."
-					},
-					"focusSize": {
-						"name": "Focus size (px)",
-						"desc": "Sharp region size. For ellipse, this is the Y radius; X radius = focusSize * Ellipse aspect."
-					},
-					"transitionSize": {
-						"name": "Transition (px)",
-						"desc": "Distance over which blur ramps up outside focus area."
-					},
-					"blurRadius": {
-						"name": "Blur radius (px)",
-						"desc": "Maximum blur sampling radius in pixels."
-					},
-					"intensity": {
-						"name": "Intensity",
-						"desc": "Overall strength (0-100%)."
-					},
-					"mode": {
-						"name": "Mode",
-						"desc": "0% = tilt-shift band, 50% = ellipse focus, 100% = radial focus."
-					},
-					"ellipseAspect": {
-						"name": "Ellipse aspect (X multiplier)",
-						"desc": "Only used near Mode=50%. X radius multiplier for ellipse. 1=same as Y, 2=twice as wide."
-					}
-				}
-			}
-		}
-	}
+  "languageTag": "en-US",
+  "fileDescription": "Strings for the 'Tilt Shift Mouse Follow' effect.",
+  "text": {
+    "effects": {
+      "sgtconti_tilt_shift_mouse_follow": {
+        "name": "Tilt Shift Mouse Follow",
+        "description": "Tilt-shift band, ellipse focus, or radial focus following a layout position. Can sample the background when used as a layer effect. Supports WebGL and WebGPU.",
+        "parameters": {
+          "mouseX": {"name": "Focus X", "desc": "Layout X coordinate of the focus point."},
+          "mouseY": {"name": "Focus Y", "desc": "Layout Y coordinate of the focus point."},
+          "angleDeg": {"name": "Angle", "desc": "Band angle in degrees."},
+          "focusSize": {"name": "Focus size", "desc": "Distance around the focus kept sharp."},
+          "transitionSize": {"name": "Transition", "desc": "Soft transition distance into blur."},
+          "blurRadius": {"name": "Blur radius", "desc": "Maximum blur radius in pixels."},
+          "intensity": {"name": "Intensity", "desc": "Overall blur strength."},
+          "mode": {"name": "Mode", "desc": "0 = band, 50 = ellipse, 100 = radial."},
+          "ellipseAspect": {"name": "Ellipse aspect", "desc": "Horizontal scale for ellipse mode."}
+        }
+      }
+    }
+  }
 }
