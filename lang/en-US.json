@@ -1,0 +1,50 @@
+{
+	"languageTag": "en-US",
+	"fileDescription": "Strings for Tilt Shift (Mouse Follow) v2.",
+	"text": {
+		"effects": {
+			"myfx_tiltshiftmousefollowv2": {
+				"name": "Tilt Shift (Mouse Follow) v2",
+				"description": "Stable v2. Band / ellipse / radial focus that follows the mouse (set params from events). New ID avoids breaking old projects.",
+				"parameters": {
+					"mouseX": {
+						"name": "Mouse X (layout px)",
+						"desc": "Set every tick from Mouse.X (layout coordinates)."
+					},
+					"mouseY": {
+						"name": "Mouse Y (layout px)",
+						"desc": "Set every tick from Mouse.Y (layout coordinates)."
+					},
+					"angleDeg": {
+						"name": "Focus angle (deg)",
+						"desc": "Band direction. 0=horizontal band (blur vs Y), 90=vertical band (blur vs X)."
+					},
+					"focusSize": {
+						"name": "Focus size (px)",
+						"desc": "Sharp region size. For ellipse, this is the Y radius; X radius = focusSize * Ellipse aspect."
+					},
+					"transitionSize": {
+						"name": "Transition (px)",
+						"desc": "Distance over which blur ramps up outside focus area."
+					},
+					"blurRadius": {
+						"name": "Blur radius (px)",
+						"desc": "Maximum blur sampling radius in pixels."
+					},
+					"intensity": {
+						"name": "Intensity",
+						"desc": "Overall strength (0-100%)."
+					},
+					"mode": {
+						"name": "Mode",
+						"desc": "0% = tilt-shift band, 50% = ellipse focus, 100% = radial focus."
+					},
+					"ellipseAspect": {
+						"name": "Ellipse aspect (X multiplier)",
+						"desc": "Only used near Mode=50%. X radius multiplier for ellipse. 1=same as Y, 2=twice as wide."
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,90 @@
+{
+  "is-c3-addon": true,
+  "type": "effect",
+  "name": "Tilt Shift (Mouse Follow) v2",
+  "id": "MyFX_TiltShiftMouseFollowV2",
+  "version": "2.0.0.1",
+  "author": "Custom",
+  "website": "https://example.com",
+  "documentation": "https://example.com/docs",
+  "description": "Stable v2. Tilt-shift band, ellipse focus, or radial focus following mouse (drive params from events). New addon ID to avoid breaking existing projects. (2.0.0.1: robust Linux/WebGL precision fix by computing delta in normalized layout space + highp fallback.)",
+  "category": "other",
+  "supported-renderers": [
+    "webgl",
+    "webgpu"
+  ],
+  "preserves-opaqueness": true,
+  "animated": false,
+  "parameters": [
+    {
+      "id": "mouseX",
+      "type": "float",
+      "initial-value": 0,
+      "uniform": "mouseX",
+      "interpolatable": false
+    },
+    {
+      "id": "mouseY",
+      "type": "float",
+      "initial-value": 0,
+      "uniform": "mouseY",
+      "interpolatable": false
+    },
+    {
+      "id": "angleDeg",
+      "type": "float",
+      "initial-value": 0,
+      "uniform": "angleDeg",
+      "interpolatable": true
+    },
+    {
+      "id": "focusSize",
+      "type": "float",
+      "initial-value": 80,
+      "uniform": "focusSize",
+      "interpolatable": true
+    },
+    {
+      "id": "transitionSize",
+      "type": "float",
+      "initial-value": 140,
+      "uniform": "transitionSize",
+      "interpolatable": true
+    },
+    {
+      "id": "blurRadius",
+      "type": "float",
+      "initial-value": 10,
+      "uniform": "blurRadius",
+      "interpolatable": true
+    },
+    {
+      "id": "intensity",
+      "type": "percent",
+      "initial-value": 1,
+      "uniform": "intensity",
+      "interpolatable": true
+    },
+    {
+      "id": "mode",
+      "type": "percent",
+      "initial-value": 0,
+      "uniform": "mode",
+      "interpolatable": true
+    },
+    {
+      "id": "ellipseAspect",
+      "type": "float",
+      "initial-value": 1,
+      "uniform": "ellipseAspect",
+      "interpolatable": true
+    }
+  ],
+  "file-list": [
+    "addon.json",
+    "effect.fx",
+    "effect.wgsl",
+    "icon.svg",
+    "lang/en-US.json"
+  ]
+}
