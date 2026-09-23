@@ -30,3 +30,5 @@ Construct 3 effect addon for a focus-following tilt-shift blur. It supports both
 ## Suggested layer setup
 
 For a whole-scene postprocess, apply the effect to a transparent layer above the scene and pass the mouse/touch position in layout coordinates to **Focus X** and **Focus Y**.
+
+Read the position relative to the layer the effect is on, e.g. `Mouse.X("Blur")` / `Mouse.Y("Blur")` or `Touch.X("Blur")` / `Touch.Y("Blur")`, so the focus stays under the cursor when that layer has parallax or scale.
