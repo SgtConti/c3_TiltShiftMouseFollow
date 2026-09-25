@@ -27,17 +27,14 @@ fn smooth01(a: f32, b: f32, x: f32) -> f32 {
     let t = sat((x - a) / max(b - a, 1e-6));
     return t * t * (3.0 - 2.0 * t);
 }
-fn sampleBase(uv: vec2<f32>) -> vec4<f32> {
-    let front = textureSampleLevel(textureFront, samplerFront, uv, 0.0);
-    let back = textureSampleLevel(textureBack, samplerBack, uv, 0.0);
+fn sampleBase(uvFront: vec2<f32>, uvBack: vec2<f32>) -> vec4<f32> {
+    let front = textureSampleLevel(textureFront, samplerFront, uvFront, 0.0);
+    let back = textureSampleLevel(textureBack, samplerBack, uvBack, 0.0);
     return front + back * (1.0 - front.a);
 }
 
 @fragment
 fn main(input: FragmentInput) -> FragmentOutput {
-    let dimU = textureDimensions(textureFront);
-    let dim = max(vec2<f32>(f32(dimU.x), f32(dimU.y)), vec2<f32>(1.0));
-    let pixelSize = 1.0 / dim;
     let layoutPos = c3_getLayoutPos(input.fragUV);
     let focusPos = vec2<f32>(shaderParams.mouseX, shaderParams.mouseY);
     let delta = layoutPos - focusPos;
@@ -54,18 +51,22 @@ fn main(input: FragmentInput) -> FragmentOutput {
     let blurFactor = smooth01(shaderParams.focusSize, shaderParams.focusSize + shaderParams.transitionSize, dist) * shaderParams.intensity;
     let r = shaderParams.blurRadius * blurFactor;
     let uv = input.fragUV;
-    let center = sampleBase(uv);
+    // The background texture has its own co-ordinate space.
+    let backUV = c3_getBackUV(input.fragPos.xy, textureBack);
+    let center = sampleBase(uv, backUV);
     var output: FragmentOutput;
     if (r <= 0.0001) {
         output.color = center;
         return output;
     }
-    let o = pixelSize * r;
+    // Texel sizes are only needed on the blur path.
+    let o = r / vec2<f32>(textureDimensions(textureFront));
+    let ob = r / vec2<f32>(textureDimensions(textureBack));
     var s = center * 0.40;
-    s = s + sampleBase(uv + vec2<f32>(o.x, 0.0)) * 0.15;
-    s = s + sampleBase(uv - vec2<f32>(o.x, 0.0)) * 0.15;
-    s = s + sampleBase(uv + vec2<f32>(0.0, o.y)) * 0.15;
-    s = s + sampleBase(uv - vec2<f32>(0.0, o.y)) * 0.15;
+    s = s + sampleBase(uv + vec2<f32>(o.x, 0.0), backUV + vec2<f32>(ob.x, 0.0)) * 0.15;
+    s = s + sampleBase(uv - vec2<f32>(o.x, 0.0), backUV - vec2<f32>(ob.x, 0.0)) * 0.15;
+    s = s + sampleBase(uv + vec2<f32>(0.0, o.y), backUV + vec2<f32>(0.0, ob.y)) * 0.15;
+    s = s + sampleBase(uv - vec2<f32>(0.0, o.y), backUV - vec2<f32>(0.0, ob.y)) * 0.15;
     output.color = s;
     return output;
 }

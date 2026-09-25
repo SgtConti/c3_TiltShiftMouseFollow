@@ -8,10 +8,14 @@ precision mediump float;
 varying vec2 vTex;
 uniform sampler2D samplerFront;
 uniform sampler2D samplerBack;
+uniform vec2 srcStart;
+uniform vec2 srcEnd;
 uniform vec2 srcOriginStart;
 uniform vec2 srcOriginEnd;
 uniform vec2 layoutStart;
 uniform vec2 layoutEnd;
+uniform vec2 destStart;
+uniform vec2 destEnd;
 uniform vec2 pixelSize;
 
 uniform float mouseX;
@@ -29,18 +33,15 @@ float smooth01(float a, float b, float x){
     float t = sat((x - a) / max(b - a, 1e-6));
     return t * t * (3.0 - 2.0 * t);
 }
-vec4 sampleBase(vec2 uv){
-    vec4 front = texture2D(samplerFront, uv);
-    vec4 back = texture2D(samplerBack, uv);
+vec4 sampleBase(vec2 uvFront, vec2 uvBack){
+    vec4 front = texture2D(samplerFront, uvFront);
+    vec4 back = texture2D(samplerBack, uvBack);
     return front + back * (1.0 - front.a);
 }
 
 void main(void){
-    vec2 denom = max(srcOriginEnd - srcOriginStart, vec2(1e-6));
-    vec2 tt = (vTex - srcOriginStart) / denom;
-    vec2 layoutSize = max(layoutEnd - layoutStart, vec2(1e-6));
-    vec2 focusT = (vec2(mouseX, mouseY) - layoutStart) / layoutSize;
-    vec2 delta = (tt - focusT) * layoutSize;
+    vec2 layoutPos = mix(layoutStart, layoutEnd, (vTex - srcOriginStart) / (srcOriginEnd - srcOriginStart));
+    vec2 delta = layoutPos - vec2(mouseX, mouseY);
 
     float ang = radians(angleDeg);
     vec2 dir = vec2(cos(ang), sin(ang));
@@ -53,16 +54,21 @@ void main(void){
 
     float blurFactor = smooth01(focusSize, focusSize + transitionSize, dist) * intensity;
     float r = blurRadius * blurFactor;
-    vec4 center = sampleBase(vTex);
+
+    // The background texture has its own co-ordinate space: map through the dest rect.
+    vec2 backScale = (destEnd - destStart) / (srcEnd - srcStart);
+    vec2 backTex = destStart + (vTex - srcStart) * backScale;
+    vec4 center = sampleBase(vTex, backTex);
     if (r <= 0.0001){
         gl_FragColor = center;
         return;
     }
     vec2 o = pixelSize * r;
+    vec2 ob = o * backScale;
     vec4 s = center * 0.40;
-    s += sampleBase(vTex + vec2(o.x, 0.0)) * 0.15;
-    s += sampleBase(vTex - vec2(o.x, 0.0)) * 0.15;
-    s += sampleBase(vTex + vec2(0.0, o.y)) * 0.15;
-    s += sampleBase(vTex - vec2(0.0, o.y)) * 0.15;
+    s += sampleBase(vTex + vec2(o.x, 0.0), backTex + vec2(ob.x, 0.0)) * 0.15;
+    s += sampleBase(vTex - vec2(o.x, 0.0), backTex - vec2(ob.x, 0.0)) * 0.15;
+    s += sampleBase(vTex + vec2(0.0, o.y), backTex + vec2(0.0, ob.y)) * 0.15;
+    s += sampleBase(vTex - vec2(0.0, o.y), backTex - vec2(0.0, ob.y)) * 0.15;
     gl_FragColor = s;
 }

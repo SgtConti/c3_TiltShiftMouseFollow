@@ -3,6 +3,7 @@ name: Package c3addon
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -10,11 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Package addon
+      - name: Validate and package addon
+        id: pkg
         run: |
+          jq -e . addon.json lang/*.json > /dev/null
+          version=$(jq -er '.version' addon.json)
+          # addon.json's file-list is the single source of truth for the package contents.
+          mapfile -t files < <(jq -er '."file-list"[]' addon.json)
+          for f in "${files[@]}"; do
+            [ -f "$f" ] || { echo "::error file=addon.json::file-list entry missing: $f"; exit 1; }
+          done
+          for f in lang/*.json; do
+            printf '%s\n' "${files[@]}" | grep -qxF "$f" || { echo "::error file=addon.json::$f is not in file-list"; exit 1; }
+          done
+          name="${GITHUB_REPOSITORY##*/}-${version}"
           mkdir -p dist
-          zip -r "dist/${GITHUB_REPOSITORY##*/}.c3addon" addon.json effect.fx effect.wgsl icon.svg lang
+          zip -X "dist/${name}.c3addon" "${files[@]}"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: c3addon
+          name: ${{ steps.pkg.outputs.name }}
           path: dist/*.c3addon
